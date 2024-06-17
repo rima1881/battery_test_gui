@@ -138,13 +138,19 @@ Tauri is a relatively young technolgy used for creating cross-platform applicati
 When talking about `Backend` we shall assume we are talking about the rust side of the application. This side is responsible for handling the communication protocol, file logging and test piloting.
 
 #### Communication Protocol
-A file `serial.rs` shall contain all helper functions and strucst related to the communication protocol described previously.
+A file `serial.rs` shall contain all helper functions and structs related to the communication protocol described previously.
+
+As it will be seen in the following section, the battery ID assigned by the protocol is used for identifying the actual physical battery. It is important that duplicates are not assigned. To mitigate the problem, the user will be allowed to assign the ID prior to starting the test.
 
 #### File Logging
 A file `file.rs` shall contain all helper functions and structs related to the logging of application errors as well as battery qualification bench results.
+
+There are two types of files. A logging file used for logging application errors or debugging message, and a csv file containing battery data. The csv file shall be named after the battery ID that was assigned by the protocol.
 
 #### Test Piloting
 A file `battery.rs` shall contain all helper functions and structs related to piloting the qualification sequence of the battery cells.
 
 ### Frontend
 When talking about `Frotend` we shall assume we are talking about the VueJS section. This sections serves as a bridge between the user and the `Backend` such that the user may start the testing sequence, obtain battery data, and more.
+
+To alleviate the need for styling, shadcn will be used. The only time the developer will have to create a component, is in the case of needing to combine several shadcn components.
