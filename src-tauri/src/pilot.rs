@@ -1,4 +1,7 @@
-#[derive(Debug, Default)]
+use chrono::{DateTime, Utc};
+use serde::Serialize;
+
+#[derive(Debug, Default, Serialize, Clone)]
 pub enum BatteryBenchState {
 	#[default]
 	Standby,
@@ -6,16 +9,27 @@ pub enum BatteryBenchState {
 	Discharge
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Clone)]
 pub enum CompletionStatus {
 	Success,
 	Fail,
 	InProgress
 }
 
-// TODO: Create/Implement the struct that holds all information about a given battery bench. Battery ID, voltage, current, temperature, bench temperature, bench state, electronic load temperature, qualification status, and USB port it's connected to.
-#[derive(Debug)]
-pub struct BatteryBench;
+#[derive(Debug, Serialize, Clone)]
+pub struct BatteryBench {
+	pub id: u8,
+	pub port: String,
+	pub temperature: u16,
+	pub battery_temperature: u16,
+	pub electronic_load_temperature: u16,
+	pub voltage: u16,
+	pub current: u16,
+	pub state: BatteryBenchState,
+	pub status: CompletionStatus,
+	pub start_date: DateTime<Utc>,
+	pub end_date: DateTime<Utc>,
+}
 
 impl BatteryBench {
 	pub fn new() -> Result<BatteryBench, &'static str> {

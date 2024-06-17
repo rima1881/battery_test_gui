@@ -10,6 +10,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { LineChart } from '@/components/ui/chart-line'
 import { Badge } from '@/components/ui/badge'
+import { useBatteryManager } from '@/lib/battery.ts'
+
+const batteryManager = useBatteryManager();
 
 const data = [
   {

@@ -1,4 +1,5 @@
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { listen } from '@tauri-apps/api/event';
 
 export enum BatteryBenchState  {
 	STANDBY,
@@ -22,7 +23,8 @@ export interface BatteryBench {
 	current: number;
 	state: BatteryBenchState;
 	status: CompletionStatus;
-	start_date: Date;
+	start_date: Date|null;
+	end_date: Date|null;
 }
 
 export function useBatteryManager() {
@@ -48,6 +50,12 @@ export function useBatteryManager() {
 		return []
 	})
 	
+	onMounted(async () => {
+		await listen('display-battery', event => {
+			console.log('Received battery data:', event.payload);
+		});
+	});
+
 	return {
 		batteries,
 		batteries_voltages,
