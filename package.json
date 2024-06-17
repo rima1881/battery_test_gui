@@ -12,6 +12,8 @@
   "dependencies": {
     "@radix-icons/vue": "^1.0.0",
     "@tauri-apps/api": "^1",
+    "@unovis/ts": "^1.4.1",
+    "@unovis/vue": "^1.4.1",
     "@vueuse/core": "^10.11.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

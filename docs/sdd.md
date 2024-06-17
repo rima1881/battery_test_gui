@@ -33,8 +33,7 @@ The frame length varies depending on the Frame ID.
 |-----------|-------------------|-------|
 | 0x00     	| Ping 				| 4 |
 | 0x01      | Assign bench ID 	| 4 |
-| 0x02		| Request bench temperature| 9 |
-| 0x03      | Request battery voltage and current | 7 |
+| 0x02		| Request bench data | 13 |
 | 0x04      | Set bench to standby | 3 |
 | 0x05      | Set bench to discharge |3|
 | 0x06      | Set bench to charge |3|
@@ -62,13 +61,13 @@ The GUI shall reply with:
 
 This guarantees to the hardware that the GUI is still running. Should the GUI miss a reply by at least a second, the hardware will cancel its current operation and go back to a waiting state and an unknown ID.
 
-### Temperature Request
-The bench has three temperature sensors. One on the battery, one on the bench, and one near the electronic load. It is important to monitor these as they may get extremely hot.
+### Data Request
+The bench has three temperature sensors. One on the battery, one on the bench, and one near the electronic load. It is important to monitor these as they may get extremely hot. It is also important to monitor the battery's voltage and current.
 
-The frame was built to send the three temperature sensor values. The request is sent from the GUI with an empty payload. The payload is then replaced by the actual values and sent back by the hardware. The following is the detailed frame structure.
+The frame was built to send the three temperature sensor values as well as the battery voltage and current. The request is sent from the GUI with an empty payload. The payload is then replaced by the actual values and sent back by the hardware. The following is the detailed frame structure.
 
-| 0xB3 | 0x02 | Battery Temp MSB | Battery Temp LSB | Bench Temp MSB | Bench Temp LSB | Load MSB | Load LSB | Checksum |
-|----------|----------|----------|----------|----------|----------|----------|----------|----------|
+| 0xB3 | 0x02 | Battery Temp MSB | Battery Temp LSB | Bench Temp MSB | Bench Temp LSB | Load MSB | Load LSB | Battery Voltage MSB | Battery Voltage LSB | Bench Current MSB | Bench Current LSB | Checksum |
+|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|
 
 The temperature values on the hardware side are multiplied by 100. Having received these values, the GUI must divide the number by 100 to obtain the proper temperature. This is called fixed-point representation.
 
@@ -76,21 +75,15 @@ An example would then be:
 
 First the GUI requests the temperature
 
-| 0xB3 | 0x02 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | Checksum |
-|----------|----------|----------|----------|----------|----------|----------|----------|----------|
+| 0xB3 | 0x02 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | 0x00 | Checksum |
+|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|
 
 The hardware then replies
 
-| 0xB3 | 0x02 | 0x07 | 0xE4 | 0x07 | 0xE4 | 0x07 | 0xE4 | Checksum |
-|----------|----------|----------|----------|----------|----------|----------|----------|----------|
+| 0xB3 | 0x02 | 0x07 | 0xE4 | 0x07 | 0xE4 | 0x07 | 0xE4 | 0x00 | 0x00 | 0x00 | 0x00 | Checksum |
+|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|
 
-The decimal value for each of these temperatures would then be `2020` which can be decoded to mean a temperature of `20.2C`.
-
-### Battery Voltage and Current Request
-Keeping track of the voltage and current of the batteries is another extremely important step. These values will later be analyzed to determine which batteries qualify for flight. The following is the detailed frame structure.
-
-| 0xB3 | 0x03 | Battery Voltage MSB | Battery Voltage LSB | Bench Current MSB | Bench Current LSB | Checksum |
-|----------|----------|----------|----------|----------|----------|----------|
+The decimal value for each of these temperatures would then be `2020` which can be decoded to mean a temperature of `20.2C`. As of this time the voltage and current is still being figured out and therefore the example does not include that value.
 
 ### Selecting Battery Cell Bench State
 For selecting the state of the bench, three separate commands are used. The following are the different commands.
