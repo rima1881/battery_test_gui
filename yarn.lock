@@ -554,7 +554,7 @@
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.4.29.tgz#84908c284e88a269f8bceee59707b14eb4b2d284"
   integrity sha512-hQ2gAQcBO/CDpC82DCrinJNgOHI2v+FA7BDW4lMSPeBpQ7sRe2OLHWe5cph1s7D8DUQAwRt18dBDfJJ220APEA==
 
-"@vueuse/core@^10.5.0":
+"@vueuse/core@^10.11.0", "@vueuse/core@^10.5.0":
   version "10.11.0"
   resolved "https://registry.yarnpkg.com/@vueuse/core/-/core-10.11.0.tgz#b042585a8bf98bb29c177b33999bd0e3fcd9e65d"
   integrity sha512-x3sD4Mkm7PJ+pcq3HX8PLPBadXCAlSDR/waK87dz0gQE+qJnaaFhc/dZVfJz+IUYzTMVGum2QlR7ImiJQN4s6g==
@@ -1462,6 +1462,11 @@ vue-demi@>=0.13.0, vue-demi@>=0.14.8:
   version "0.14.8"
   resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.14.8.tgz#00335e9317b45e4a68d3528aaf58e0cec3d5640a"
   integrity sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==
+
+vue-sonner@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vue-sonner/-/vue-sonner-1.1.2.tgz#996c662d817b150e67770272e1d1d7f8a2d3a0c6"
+  integrity sha512-yg4f5s0a3oiiI7cNvO0Dajux1Y7s04lxww3vnQtnwQawJ3KqaKA9RIRMdI9wGTosRGIOwgYFniFRGl4+IuKPZw==
 
 vue-template-compiler@^2.7.14:
   version "2.7.16"

@@ -119,7 +119,7 @@ Where the `State and completion status` acts as a bit flag with the following st
 
 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |----------|----------|----------|----------|----------|----------|----------|----------|
-| Discharge | Charge | RSVD | RSVD | RSVD | RSVD | Failed | Success |
+| Discharge | Charge | RSVD | RSVD | RSVD | In Progress | Failed | Success |
 
 Meaning if the bench completes charging successfully, it would then send the following frame:
 
@@ -140,7 +140,7 @@ When talking about `Backend` we shall assume we are talking about the rust side 
 #### Communication Protocol
 A file `serial.rs` shall contain all helper functions and structs related to the communication protocol described previously.
 
-As it will be seen in the following section, the battery ID assigned by the protocol is used for identifying the actual physical battery. It is important that duplicates are not assigned. To mitigate the problem, the user will be allowed to assign the ID prior to starting the test.
+As it will be seen in the following section, the battery ID assigned by the protocol is used for identifying the actual physical battery. It is important that duplicates are not assigned. To mitigate the problem, the user will be allowed to assign the ID prior to starting the test. Additionally, to obtain the latest ID used, the developer may look at the logged files.
 
 #### File Logging
 A file `file.rs` shall contain all helper functions and structs related to the logging of application errors as well as battery qualification bench results.
@@ -148,7 +148,7 @@ A file `file.rs` shall contain all helper functions and structs related to the l
 There are two types of files. A logging file used for logging application errors or debugging message, and a csv file containing battery data. The csv file shall be named after the battery ID that was assigned by the protocol.
 
 #### Test Piloting
-A file `battery.rs` shall contain all helper functions and structs related to piloting the qualification sequence of the battery cells.
+A file `pilot.rs` shall contain all helper functions and structs related to piloting the qualification sequence of the battery cells.
 
 ### Frontend
 When talking about `Frotend` we shall assume we are talking about the VueJS section. This sections serves as a bridge between the user and the `Backend` such that the user may start the testing sequence, obtain battery data, and more.
