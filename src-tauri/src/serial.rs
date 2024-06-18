@@ -21,6 +21,20 @@
 /// let decoded = decode(&encoded).unwrap();
 /// assert_eq!(decoded, vec![0x01, 0x02, 0x03]);
 /// ```
+enum FrameId {
+	Ping = 0x00,
+	AssignID = 0x01,
+	RequestData = 0x02,
+	SetStandby = 0x04,
+	SetDischarge = 0x05,
+	SetCharge = 0x06,
+	AnnounceCompletion = 0x07	
+}
+
+struct Frame {
+
+}
+
 pub fn decode(bytes: &[u8]) -> Result<Vec<u8>, &'static str> {
 	todo!()
 }
