@@ -1,4 +1,3 @@
-// TODO: Crate a struct for every frame that contains a payload so that it can be serialized and deserialized (for temperature, only divide by 100 when displaying the value)
 
 /// Decodes a slice of bytes by removing the prepended 0xB3 and verifying the checksum.
 ///
@@ -22,7 +21,7 @@
 
 const DELIMITER : u8 = 0xB3;
 
-enum FrameId {
+enum Command {
 	Ping = 0x00,
 	AssignID = 0x01,
 	RequestData = 0x02,
@@ -32,8 +31,13 @@ enum FrameId {
 	AnnounceCompletion = 0x07	
 }
 
-struct Frame {
-
+struct Payload {
+    battery_id : u8,
+	voltage : f32,
+	current : f32,
+	temperature : u32,
+	bench_temperature : u32,
+	load_temperature : u32,
 }
 
 pub fn decode(bytes: &[u8]) -> Result<Vec<u8>, &'static str> {
