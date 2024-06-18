@@ -1,6 +1,4 @@
-// TODO: Create an enum with frame IDs specified in the SDD
 // TODO: Crate a struct for every frame that contains a payload so that it can be serialized and deserialized (for temperature, only divide by 100 when displaying the value)
-// TODO: Create a constant for the starting byte delimiter in the SDD
 
 /// Decodes a slice of bytes by removing the prepended 0xB3 and verifying the checksum.
 ///
@@ -21,6 +19,9 @@
 /// let decoded = decode(&encoded).unwrap();
 /// assert_eq!(decoded, vec![0x01, 0x02, 0x03]);
 /// ```
+
+const DELIMITER : u8 = 0xB3;
+
 enum FrameId {
 	Ping = 0x00,
 	AssignID = 0x01,
