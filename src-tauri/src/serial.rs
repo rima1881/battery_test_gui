@@ -31,14 +31,26 @@ enum Command {
 	AnnounceCompletion = 0x07	
 }
 
-struct Payload {
-    battery_id : u8,
-	voltage : f32,
-	current : f32,
-	temperature : u32,
-	bench_temperature : u32,
-	load_temperature : u32,
+struct AssignIDPayload {
+	new_id : u8
 }
+
+struct RequestDataPayload {
+	voltage : u16,
+	current : u16,
+	temperature : u16,
+	bench_temperature : u16,
+	load_temperature : u16,
+}
+
+struct PingPayload {
+	identification : u8
+}
+
+struct AnnounceCompletionPayload {
+	flag : u8
+}
+
 
 pub fn decode(bytes: &[u8]) -> Result<Vec<u8>, &'static str> {
 	todo!()
