@@ -36,11 +36,11 @@ struct AssignIDPayload {
 }
 
 struct RequestDataPayload {
-	voltage : u16,
-	current : u16,
-	temperature : u16,
+	battery_temperature : u16,
 	bench_temperature : u16,
 	load_temperature : u16,
+	voltage : u16,
+	current : u16,
 }
 
 struct PingPayload {
