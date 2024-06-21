@@ -4,11 +4,13 @@
 mod file;
 mod pilot;
 mod serial;
+mod database; // added temporarily (maybe)
 
 use std::thread;
 use std::time::Duration;
 
 use chrono::Utc;
+use database::initialize_database; // also temporary
 use tauri::Manager;
 
 use self::file::*;
@@ -22,27 +24,36 @@ fn greet(name: &str) -> String {
 }
 
 fn main() {
+    // Initialize the database
+    let conn = initialize_database().expect("Failed to initialize database");
+    
     tauri::Builder::default()
         .setup(|app| {
             let app_handle = app.handle();
             thread::spawn(move || {
                 loop {
-                    app_handle.emit_all(
-                        "display-battery",
-                        BatteryBench {
-                            id: 0,
-                            port: "COM 4".to_string(),
-                            temperature: 2020,
-                            battery_temperature: 2013,
-                            electronic_load_temperature: 2054,
-                            voltage: 534,
-                            current: 324,
-                            state: BatteryBenchState::Standby,
-                            status: CompletionStatus::InProgress,
-                            start_date: Utc::now(),
-                            end_date: Utc::now(),
-                        }
-                    ).unwrap();
+                    let battery_bench = BatteryBench {
+                        id: 0,
+                        port: "COM 4".to_string(),
+                        temperature: 2020,
+                        battery_temperature: 2013,
+                        electronic_load_temperature: 2054,
+                        voltage: 534,
+                        current: 324,
+                        state: BatteryBenchState::Standby,
+                        status: CompletionStatus::InProgress,
+                        start_date: Utc::now(),
+                        end_date: Utc::now(),
+                    };
+            
+                    // Log battery data
+                    if let Err(e) = log_battery(&conn, battery_bench.clone()) {
+                        eprintln!("Failed to log battery data: {}", e);
+                    }
+            
+                    // Emit battery data to frontend
+                    app_handle.emit_all("display-battery", battery_bench).unwrap();
+                    
                     thread::sleep(Duration::from_secs(1)); // Adjust the interval as needed
                 }
             });
