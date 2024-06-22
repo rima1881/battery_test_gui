@@ -8,7 +8,8 @@ pub fn initialize_database() -> Result<Connection> {
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS battery_logs (
-            id INTEGER PRIMARY KEY,
+            record_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER NOT NULL,
             port TEXT NOT NULL,
             temperature INTEGER NOT NULL,
             battery_temperature INTEGER NOT NULL,

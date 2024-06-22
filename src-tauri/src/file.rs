@@ -13,8 +13,9 @@ use chrono::{DateTime, Utc};
 /// # Returns
 ///
 /// A `Result<(), &'static str>` an error message if the logging failed.
-/// 
-/// Testing using a databse instead of a CSV file, might go back to csv if fails:
+///
+
+// Testing using a databse instead of a CSV file, might go back to csv if fails.
 // Logs battery data into the SQLite database.
 pub fn log_battery(conn: &Connection, battery_bench: BatteryBench) -> Result<(), &'static str> {
     // Open or create the SQLite database
@@ -75,7 +76,8 @@ mod tests {
 		// Create the table (if it doesn't exist)
         conn.execute(
             "CREATE TABLE IF NOT EXISTS battery_logs (
-                id INTEGER PRIMARY KEY,
+                record_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER NOT NULL,
                 port TEXT NOT NULL,
                 temperature INTEGER NOT NULL,
                 battery_temperature INTEGER NOT NULL,
