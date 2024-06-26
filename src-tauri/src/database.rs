@@ -4,7 +4,7 @@ use rusqlite::{Connection, Result};
 
 /// Initialize the SQLite database and create necessary tables.
 pub fn initialize_database() -> Result<Connection> {
-    let conn = Connection::open("battery_logs.db")?;
+    let conn = Connection::open("../battery_logs.db").expect("unable to locate database");
 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS battery_logs (
