@@ -10,7 +10,6 @@ use std::fs::File; // addedd for debugging - to be removed/commented when buildi
 use std::io::Write; // same as above
 use std::thread;
 use std::time::Duration;
-use std::path::PathBuf; // added to
 
 use chrono::Utc;
 use database::initialize_database; // also temporary
@@ -35,13 +34,13 @@ fn export_csv_command(csv_path: String) -> Result<String, String> {
     Ok("CSV export successful".to_string())
 }
 
-///tauri command to get the project directory path or a parent directory's path
+///tauri command to get the project directory path or a parent directory's path (unused)
 #[tauri::command]
 fn get_project_dir(steps: usize) -> Result<String, String> {
     let current_dir = std::env::current_dir()
         .map_err(|e| e.to_string())?;
     
-    let mut path = PathBuf::from(current_dir);
+    let mut path = std::path::PathBuf::from(current_dir);
     
     for _ in 0..steps {
         if let Some(parent) = path.parent() {
@@ -58,12 +57,12 @@ fn get_project_dir(steps: usize) -> Result<String, String> {
 
 
 // For Debugging - to be removed/commented when building
-fn get_writable_path() -> PathBuf {
-    // Modify this as needed
-    let mut path = PathBuf::from("C:\\Users\\zephr\\Desktop\\SC");
-    path.push("export.csv");
-    path
-}
+// fn get_writable_path() -> PathBuf {
+//     // Modify this as needed
+//     let mut path = PathBuf::from("C:\\Users\\zephr\\Desktop\\SC");
+//     path.push("export.csv");
+//     path
+// }
 
 fn main() {
     // Initialize the database

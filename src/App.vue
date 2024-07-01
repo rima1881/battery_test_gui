@@ -53,7 +53,7 @@ const data = [
 async function exportToCSV() {
   try {
     // const projectDir = await invoke('get_project_dir', { steps: 3 });
-    let projectDir = "C://Users//zephr//Documents";
+    let projectDir = "C://Users//zephr//Desktop//SC";
     console.log('Project Directory:', projectDir); // Debug
     const csvPath = projectDir;
     await invoke('export_csv_command', { csvPath });
