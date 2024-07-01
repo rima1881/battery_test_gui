@@ -6,11 +6,15 @@ mod pilot;
 mod serial;
 mod database; // added temporarily (maybe)
 
+use std::fs::File; // addedd for debugging - to be removed/commented when building
+use std::io::Write; // same as above
 use std::thread;
 use std::time::Duration;
+use std::path::PathBuf; // added to
 
 use chrono::Utc;
 use database::initialize_database; // also temporary
+use file::export_to_csv;
 use tauri::Manager;
 
 use self::file::*;
@@ -21,6 +25,44 @@ use self::serial::*;
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+/// tauri command that calls the backend (rust) export_to_csv function
+#[tauri::command]
+fn export_csv_command(csv_path: String) -> Result<String, String> {
+    let conn = initialize_database().map_err(|e| format!("Failed to initialize database: {}", e))?;
+    export_to_csv(&conn, &csv_path).map_err(|e| e.to_string())?;
+    Ok("CSV export successful".to_string())
+}
+
+///tauri command to get the project directory path or a parent directory's path
+#[tauri::command]
+fn get_project_dir(steps: usize) -> Result<String, String> {
+    let current_dir = std::env::current_dir()
+        .map_err(|e| e.to_string())?;
+    
+    let mut path = PathBuf::from(current_dir);
+    
+    for _ in 0..steps {
+        if let Some(parent) = path.parent() {
+            path = parent.to_path_buf();
+        } else {
+            return Err("Reached the root directory. Cannot go up further.".to_string());
+        }
+    }
+    
+    path.to_str()
+        .map(|s| s.to_string())
+        .ok_or_else(|| "Failed to convert path to string.".to_string())
+}
+
+
+// For Debugging - to be removed/commented when building
+fn get_writable_path() -> PathBuf {
+    // Modify this as needed
+    let mut path = PathBuf::from("C:\\Users\\zephr\\Desktop\\SC");
+    path.push("export.csv");
+    path
 }
 
 fn main() {
@@ -59,7 +101,7 @@ fn main() {
             });
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![])
+        .invoke_handler(tauri::generate_handler![export_csv_command, get_project_dir])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

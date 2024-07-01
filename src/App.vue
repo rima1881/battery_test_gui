@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button'
 import { LineChart } from '@/components/ui/chart-line'
 import { Badge } from '@/components/ui/badge'
 import { useBatteryManager } from '@/lib/battery.ts'
+import { invoke } from '@tauri-apps/api/tauri' // added to use the export_to_csv() from backend and invoke tauri commands
+import { appDataDir } from '@tauri-apps/api/path'// added to obtain directory path
 
 const batteryManager = useBatteryManager();
 
@@ -45,7 +47,23 @@ const data = [
     '0x00': 1.79,
     '0x01': 1.64,
   },
-]
+];
+
+// invokes the export_csv_command tauri command and creates the csv file in the project's main directory (supposed to)
+async function exportToCSV() {
+  try {
+    // const projectDir = await invoke('get_project_dir', { steps: 3 });
+    let projectDir = "C://Users//zephr//Documents";
+    console.log('Project Directory:', projectDir); // Debug
+    const csvPath = projectDir;
+    await invoke('export_csv_command', { csvPath });
+    alert('CSV export successful!');
+  } catch (error) {
+    console.error('Failed to export CSV:', error);
+    alert('Failed to export CSV.');
+  }
+}
+
 </script>
 
 <template>
@@ -155,6 +173,9 @@ const data = [
         index="year"
         :categories="['0x00', '0x01']"
       />
+    </section>
+    <section>
+      <Button @click="exportToCSV">Export to CSV</Button>
     </section>
   </section>
 </template>

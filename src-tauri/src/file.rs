@@ -2,6 +2,75 @@ use crate::pilot::{BatteryBench, BatteryBenchState, CompletionStatus};
 use rusqlite::{params, Connection, Result};
 use chrono::{DateTime, Utc};
 
+use std::fs::File;
+use std::io::Write;
+use csv::Writer;
+
+/// Generates a CSV file from the SQLite database "battery_logs.db".
+///
+/// # Arguments
+///
+/// * `conn` - A reference to the SQLite database connection.
+/// * `csv_path` - The path where the CSV file will be saved.
+///
+/// # Returns
+///
+/// A `Result<(), String>` indicating success or failure.
+pub fn export_to_csv(conn: &Connection, csv_path: &str) -> Result<(), String> {
+    // Prepare the SQL query to select all rows from the battery_logs table.
+    let mut stmt = conn.prepare("SELECT * FROM battery_logs")
+        .map_err(|err| format!("Failed to prepare query: {}", err))?;
+    
+    // Query the database and map rows to a tuple.
+    let rows = stmt.query_map([], |row| {
+        Ok((
+            row.get::<_, i64>(0)?,
+            row.get::<_, i64>(1)?,
+            row.get::<_, String>(2)?,
+            row.get::<_, i64>(3)?,
+            row.get::<_, i64>(4)?,
+            row.get::<_, i64>(5)?,
+            row.get::<_, i64>(6)?,
+            row.get::<_, i64>(7)?,
+            row.get::<_, String>(8)?,
+            row.get::<_, String>(9)?,
+            row.get::<_, String>(10)?,
+            row.get::<_, String>(11)?,
+        ))
+    }).map_err(|err| format!("Failed to query database: {}", err))?;
+
+    // Create a CSV writer that writes to the specified file path.
+    let mut wtr = Writer::from_path(csv_path)
+        .map_err(|err| format!("Failed to create CSV writer: {}", err))?;
+    
+    // Write the header record to the CSV file.
+    wtr.write_record(&["record_id", "id", "port", "temperature", "battery_temperature", "electronic_load_temperature", "voltage", "current", "state", "status", "start_date", "end_date"])
+        .map_err(|err| format!("Failed to write CSV header: {}", err))?;
+    
+    // Iterate over the rows and write each record to the CSV file.
+    for row in rows {
+        let row = row.map_err(|err| format!("Failed to fetch row: {}", err))?;
+        wtr.write_record(&[
+            row.0.to_string(),
+            row.1.to_string(),
+            row.2,
+            row.3.to_string(),
+            row.4.to_string(),
+            row.5.to_string(),
+            row.6.to_string(),
+            row.7.to_string(),
+            row.8,
+            row.9,
+            row.10,
+            row.11,
+        ]).map_err(|err| format!("Failed to write CSV record: {}", err))?;
+    }
+
+    // Flush the writer to ensure all data is written to the file.
+    wtr.flush().map_err(|err| format!("Failed to flush CSV writer: {}", err))?;
+    Ok(())
+}
+
 /// Logs all values associated to a battery bench to a csv file.
 ///
 /// The values are logged into a file named after the ID of the battery. If the file exists, the values are appended
